@@ -1,12 +1,16 @@
-document.getElementById('searchForm').addEventListener('submit', function(e) {
+const url = 'http://127.0.0.1:5000';
+document.getElementById('searchForm').addEventListener('submit', async function(e) {
     e.preventDefault();
     // Get user input
     let location = document.getElementById('location').value;
     let category = document.getElementById('category').value;
-
-    findComp('http://localhost:8000', {"location": location, "category" : category});
-    const results = `Analysis for ${category} in ${location}: Moderate competition with 5 similar businesses nearby.`;
-    
+    await test().then(data => {
+      console.log(data);
+    });
+    await test2().then(data => {
+      document.getElementById('resultsSection').innerHTML = `<p>${data}</p>`;
+      console.log(data);
+    })
     //document.getElementById('resultsSection').innerHTML = `<p>${results}</p>`;
 });
 
@@ -19,12 +23,37 @@ categories.forEach(cat => {
     let select = document.getElementById('category')
     select.appendChild(option);
 });
+async function test() {
+  const response = await fetch('http://127.0.0.1:5000/')
+  const data = await response.json();
+  console.log(data);
+}
+async function test2(data) {
+  const response = await fetch('http://127.0.0.1:5000/', {
+    method: 'POST',
+    body: JSON.stringify(data),
+    headers: {
+      'Content-Type': 'application/json'
+    },
+  })
+  const responseData = await response.json();
+  console.log(responseData);
+
+}
+
+
+
+
+
+
+
+
+
+
+
 function testGet(url) {
   fetch(url, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-    }
+    method: 'GET'
   })
   .then(response => {
     response.json();
@@ -43,19 +72,16 @@ function findComp(url, data) {
     body: JSON.stringify(data),
     headers: {
       'Content-Type': 'application/json',
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Methods': '*',
-      'Access-Control-Allow-Headers': '*', 
     }
   })
   .then(response => {
-    console.log(response);
+    console.log(response.result);
     console.log(response.text());
   })
   .then(responseData => {
     console.log(responseData);
     document.getElementById('resultsSection').innerHTML = `<p>${responseData}</p>`;
-  }).finally(() => {
+  }).finally((res) => {
     console.log('done');
   });
 //   .catch(error => {
