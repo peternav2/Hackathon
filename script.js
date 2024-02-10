@@ -50,6 +50,7 @@ function findComp(url, data) {
   })
   .then(response => {
     console.log(response);
+    console.log(response.text());
   })
   .then(responseData => {
     console.log(responseData);
