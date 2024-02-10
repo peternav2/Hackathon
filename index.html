@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Market Analysis App</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+        }
+        h1 {
+            text-align: center;
+        }
+        label {
+            font-weight: bold;
+        }
+        input[type="text"], select {
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            margin: 10px 0;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            background-color: #fff;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Market Analysis Application</h1>
+    <form id="analysisForm">
+        <div>
+            <label for="location">Location:</label>
+            <input type="text" id="location" name="location" placeholder="Enter location">
+        </div>
+        <div>
+            <label for="category">Business Category:</label>
+            <select id="category" name="category">
+                <option value="restaurant">Restaurant</option>
+                <option value="retail">Retail Store</option>
+                <option value="salon">Salon</option>
+                <!-- Add more options as needed -->
+            </select>
+        </div>
+        <button type="submit">Analyze Market</button>
+    </form>
+    <div id="resultContainer" class="result" style="display: none;">
+        <h2>Market Analysis Result</h2>
+        <p id="resultMessage"></p>
+    </div>
+</div>
+
+<script>
+    document.getElementById('analysisForm').addEventListener('submit', function(event) {
+        event.preventDefault(); // Prevent default form submission
+        // Get input values
+        var location = document.getElementById('location').value;
+        var category = document.getElementById('category').value;
+        // Perform market analysis (you'll need to implement this logic)
+        var result = performMarketAnalysis(location, category);
+        // Display result
+        document.getElementById('resultMessage').innerText = result;
+        document.getElementById('resultContainer').style.display = 'block';
+    });
+
+    function performMarketAnalysis(location, category) {
+        return "The competition in " + location + " for " + category + " is moderate.";
+    }
+    function sendHttpPostRequest(url, data) {
+        fetch(url, {
+            method: 'POST',
+            body: data
+        })
+        .then(response => response.text())
+        .then(responseText => {
+            console.log('Request:', data);
+            console.log('Response:', responseText);
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    }
+
+</script>
+
+</body>
+</html>
