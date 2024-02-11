@@ -1,16 +1,13 @@
+
 const url = 'http://127.0.0.1:5000';
+
 document.getElementById('searchForm').addEventListener('submit', async function(e) {
     e.preventDefault();
     // Get user input
     let location = document.getElementById('location').value;
     let category = document.getElementById('category').value;
-    await test().then(data => {
-      console.log(data);
-    });
-    await test2().then(data => {
-      document.getElementById('resultsSection').innerHTML = `<p>${data}</p>`;
-      console.log(data);
-    })
+    await test()
+    await test2("address testing")
     //document.getElementById('resultsSection').innerHTML = `<p>${results}</p>`;
 });
 
@@ -26,7 +23,9 @@ categories.forEach(cat => {
 async function test() {
   const response = await fetch('http://127.0.0.1:5000/')
   const data = await response.json();
-  console.log(data);
+
+  document.getElementById('resultsSection').innerHTML = `<p>${data.coords}</p>`;
+  console.log(data.coords);
 }
 async function test2(data) {
   const response = await fetch('http://127.0.0.1:5000/', {
@@ -88,3 +87,33 @@ function findComp(url, data) {
 //     console.error('Error:', error);
 //   });
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

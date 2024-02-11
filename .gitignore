@@ -1,1 +1,7 @@
 .DS_Store
+.venv
+server/__pycache__
+server/.env
+.env
+node_modules
+usa_data.csv
