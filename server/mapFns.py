@@ -42,10 +42,15 @@ def getBest5FromState(state):
     mask = df_zips['state_id'].str.contains(state)
     df_ny_zips = df_zips[mask]['zip']
     zipcode = df_ny_zips.sample(1).iloc[0]
-    mask = df_usa['address'].str.contains(zipcode.__str__())
+    mask = df_usa['address'].str.endswith(zipcode.__str__())
     df_ny_adds = df_usa[mask]
     mask = df_ny_adds['rating'].str.contains(pat="4\.[0-9]+|5\.0", regex=True)
     df_ny_adds = df_ny_adds[mask]
+    mask = df_ny_adds['reviews_count'].str.contains(pat="^.{5,}$", regex=True)
+    df_ny_adds = df_ny_adds[mask]
+    print("REVIEWS COUNT")
+    print(df_ny_adds.head(5)['reviews_count'].sort_values(ascending=False))
+    print(df_ny_adds.head(5)['reviews_count'].sort_values(ascending=False).str.contains(pat="^.{5,}$", regex=True))
     # mask = df_ny_adds['reviews_count'].str.contains(pat="/^.{5,}$/", regex=True)
     # df_ny_adds = df_ny_adds[mask]
     print(len(df_ny_adds.head(5)))
