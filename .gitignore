@@ -5,3 +5,4 @@ server/.env
 .env
 node_modules
 usa_data.csv
+cleaned_data.csv

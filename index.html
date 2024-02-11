@@ -5,35 +5,31 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Market Analysis Tool</title>
     <link rel="stylesheet" href="style.css">
+    <!-- Include Google Maps JavaScript API -->
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC3KOj1XPXVJApnJ69zNjMZhbnbzHRGrlg&callback=initMap" async defer></script>
 </head>
 <body>
     <header>
-        <h1>Market Analysis Tool</h1>
+        <h1>My Weird Journey</h1>
     </header>
     <main>
         <section class="search-section">
-            <h2>Find Your Market Competition</h2>
+            <h2>Find a new place to explore!</h2>
             <form id="searchForm">
                 <div class="input-group">
-                    <label for="location">Location:</label>
-                    <input type="text" id="location" name="location" required>
-                </div>
-                <div class="input-group">
-                    <label for="categories">Business Category:</label>
-                    <select id="category" name="category" required>
-                        <!-- <option value="">Select a category</option> -->
-                        <!-- Populate categories here -->
-                    </select>
+                    <label for="state">State (e.g., NY):</label>
+                    <input type="text" id="state" name="state" required pattern="[A-Za-z]{2}" title="Two-letter state code">
                 </div>
                 <button type="submit">Analyze</button>
             </form>
         </section>
         <section id="resultsSection" class="results-section">
-            <!-- Results will be displayed here -->
+            <h3>Selected State: <span id="selectedState"></span></h3>
+            <div id="map" style="height: 400px;"></div>
         </section>
     </main>
     <footer>
-        <p>&copy; 2024 Market Analysis Tool</p>
+        <p>&copy; 2024 Weird Hacks</p>
     </footer>
     <script src="script.js"></script>
 </body>

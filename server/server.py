@@ -1,108 +1,45 @@
-import json
-import os
-import requests
-from dotenv import load_dotenv
-from flask import Flask, make_response, request
-import flask
-from flask_cors import CORS, cross_origin
-from flask import Flask
+from flask import Flask, jsonify, request
 from flask_cors import CORS
-from mapFns import *
+import logging
+
 app = Flask(__name__)
-CORS(app)
-load_dotenv()
-map_key = os.getenv("MAP_KEY", "Key Not Found")
+CORS(app)  # This will enable CORS for all routes and origins.
 
+# Configure logging
+logging.basicConfig(level=logging.DEBUG)
 
-@app.route("/", methods=['GET', 'POST', 'OPTIONS'])
-@cross_origin()
-def hello():
-    if request.method == 'POST':
-        body = request.get_json()
-        location = body['location']
-        
-        res = make_response()
-        res.response = json.dumps({"message": "Hello, World! WE POSTING"})
-        res.headers['content-type'] = 'application/json'
-        return res
+# Dummy function to simulate retrieving data based on the state
+# Replace this with your actual function to retrieve data from your source
+def get_random_zip_and_locations(state_abbr):
+    # Placeholder for where you would have logic to get random zip code and locations
+    # In practice, this function would interact with a database or data file
+    if state_abbr == "NY":
+        selected_zip = "10001"
+        top_locations = [
+            {"name": "Empire State Building", "lat": 40.748817, "lng": -73.985428},
+            {"name": "Central Park", "lat": 40.7829, "lng": -73.9654},
+            # ... more locations
+        ]
     else:
-        res = make_response()
-        coords = get_coordinates_from_address("1600 Amphitheatre Parkway, Mountain View, CA")
-        res.response = json.dumps({"message": "Hello, World!", "coords": coords})
-        return res
-    
+        selected_zip = None
+        top_locations = []
 
+    return selected_zip, top_locations
 
+@app.route("/get_locations", methods=['POST'])
+def get_locations():
+    # Get state from the request data
+    state_data = request.get_json()
+    state_abbr = state_data.get('state', '').upper()
 
-def get_coordinates_from_addresses(addresses):
-    for address in addresses:
-        API_KEY = map_key
-        base_url = "https://maps.googleapis.com/maps/api/geocode/json?"
-        # URL encode the address
-        address = requests.utils.quote(address)
-        # Complete URL
-        url = f"{base_url}address={address}&key={API_KEY}"
-        # Send the request
-        response = requests.get(url)
-        if response.status_code == 200:
-            # Parse the JSON response
-            data = response.json()
-            
-            # Check if any results were found
-            if data['status'] == 'OK':
-                # Extract latitude and longitude
-                latitude = data['results'][0]['geometry']['location']['lat']
-                longitude = data['results'][0]['geometry']['location']['lng']
-                return latitude, longitude
-            else:
-                print("Geocoding API error:", data['status'])
-                return None, None
-        else:
-            print("HTTP error", response.status_code)
-            return None, None
+    # Get a random zip code and top locations for the given state
+    selected_zip, top_locations = get_random_zip_and_locations(state_abbr)
 
-
-def get_coordinates_from_address(address):
-    address = "1600 Amphitheatre Parkway, Mountain View, CA"
-    API_KEY = map_key
-    base_url = "https://maps.googleapis.com/maps/api/geocode/json?"
-    
-    # URL encode the address
-    address = requests.utils.quote(address)
-    
-    # Complete URL
-    url = f"{base_url}address={address}&key={API_KEY}"
-    
-    # Send the request
-    response = requests.get(url)
-    
-    if response.status_code == 200:
-        # Parse the JSON response
-        data = response.json()
-        
-        # Check if any results were found
-        if data['status'] == 'OK':
-            # Extract latitude and longitude
-            latitude = data['results'][0]['geometry']['location']['lat']
-            longitude = data['results'][0]['geometry']['location']['lng']
-            return latitude, longitude
-        else:
-            print("Geocoding API error:", data['status'])
-            return None, None
+    # Return the data as a JSON response
+    if selected_zip and top_locations:
+        return jsonify({"zip_code": selected_zip, "locations": top_locations})
     else:
-        print("HTTP error", response.status_code)
-        return None, None
+        return jsonify({"message": f"No locations found for state: {state_abbr}"}), 404
 
-# Example usage
-address = "1600 Amphitheatre Parkway, Mountain View, CA"
-latitude, longitude = get_coordinates_from_address(address)
-if latitude and longitude:
-    print(f"Coordinates for '{address}' are: {latitude}, {longitude}")
-else:
-    print("Could not get the coordinates.")
-
-
-
-
-
-
+if __name__ == "__main__":
+    app.run(debug=True)

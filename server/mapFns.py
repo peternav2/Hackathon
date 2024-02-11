@@ -4,8 +4,8 @@ import os
 from dotenv import load_dotenv
 load_dotenv()
 map_key = os.getenv("MAP_KEY", "Key Not Found")
-df_usa = pd.read_csv("../usa_data.csv", low_memory=False)
-df_zips = pd.read_csv("./uszips.csv", low_memory=False)
+df_usa = pd.read_csv("./usa_data.csv", low_memory=False)
+df_zips = pd.read_csv("/Users/anyakozhevatova/Hackathon/server/uszips.csv", low_memory=False)
 
 def getAddsInState(state):
     df_adds = df_usa[df_usa['address'].str.contains(state)]
@@ -15,7 +15,10 @@ def getZipInState(state):
     print(df_temp)
     return df_temp
 def getRandomZip(df_state_zips):
-    return df_state_zips.sample(5)
+    if not df_state_zips.empty:
+        return df_state_zips.sample(1)['zip'].iloc[0]
+    else:
+        return None
 print("testing geting random zip")
 zips = getRandomZip(getZipInState("NY"))
 print(zips)

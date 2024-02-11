@@ -1,119 +1,65 @@
+let map;
+const url = 'http://127.0.0.1:5000/get_locations';
 
-const url = 'http://127.0.0.1:5000';
+// Initialize the Google Map
+function initMap() {
+    map = new google.maps.Map(document.getElementById('map'), {
+        center: { lat: 37.0902, lng: -95.7129 }, // Center of the US
+        zoom: 5
+    });
+}
 
-document.getElementById('searchForm').addEventListener('submit', async function(e) {
+// Add a submit event listener to the search form
+document.getElementById('searchForm').addEventListener('submit', function(e) {
     e.preventDefault();
-    // Get user input
-    let location = document.getElementById('location').value;
-    let category = document.getElementById('category').value;
-    await test()
-    await test2(location)
-    //document.getElementById('resultsSection').innerHTML = `<p>${results}</p>`;
+    const state = document.getElementById('state').value;
+    document.getElementById('selectedState').textContent = state;
+
+    fetch(url, {
+        method: 'POST',
+        body: JSON.stringify({ 'state': state }),
+        headers: {
+            'Content-Type': 'application/json'
+        },
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok ' + response.statusText);
+        }
+        return response.json();
+    })
+    .then(data => {
+        // Check if the data includes the locations key
+        if (!data || !data.locations) {
+            throw new Error('No locations data in response');
+        }
+
+        // Clear the map
+        initMap();
+
+        // Place markers on the map for each location
+        data.locations.forEach(function(location) {
+            const marker = new google.maps.Marker({
+                position: { lat: location.lat, lng: location.lng },
+                map: map,
+                title: location.name
+            });
+
+            // Add an info window for each marker
+            const infowindow = new google.maps.InfoWindow({
+                content: location.name
+            });
+
+            marker.addListener('click', function() {
+                infowindow.open(map, marker);
+            });
+        });
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Error loading locations: ' + error.message);
+    });
 });
 
-let categories = ['Restaurant', 'Retail', 'Service'];
-let categorySelect = document.getElementById('category');
-categories.forEach(cat => {
-    let option = document.createElement('option');
-    option.value = cat.toString();
-    option.textContent = cat.toString();
-    let select = document.getElementById('category')
-    select.appendChild(option);
-});
-async function test() {
-  const response = await fetch('http://127.0.0.1:5000/')
-  const data = await response.json();
-
-  document.getElementById('resultsSection').innerHTML = `<p>${data.coords}</p>`;
-  console.log(data.coords);
-}
-async function test2(data) {
-  const response = await fetch('http://127.0.0.1:5000/', {
-    method: 'POST',
-    body: JSON.stringify({'location':data}),
-    headers: {
-      'Content-Type': 'application/json'
-    },
-  })
-  const responseData = await response.json();
-  console.log(responseData);
-
-}
-
-
-
-
-
-
-
-
-
-
-
-function testGet(url) {
-  fetch(url, {
-    method: 'GET'
-  })
-  .then(response => {
-    response.json();
-    document.getElementById('resultsSection').innerHTML = `<p>${response}</p>`;
-    console.log(response)
-  })
-  .catch(error => error.toString())
-  .catch(error => {
-    console.error('Error:', error);
-  });
-}
-function findComp(url, data) {
-    console.log(data);
-  fetch(url, {
-    method: 'POST',
-    body: JSON.stringify(data),
-    headers: {
-      'Content-Type': 'application/json',
-    }
-  })
-  .then(response => {
-    console.log(response.result);
-    console.log(response.text());
-  })
-  .then(responseData => {
-    console.log(responseData);
-    document.getElementById('resultsSection').innerHTML = `<p>${responseData}</p>`;
-  }).finally((res) => {
-    console.log('done');
-  });
-//   .catch(error => {
-//     console.error('Error:', error);
-//   });
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+// Assign the initMap function to the window object so it can be called when the Google Maps script loads
+window.initMap = initMap;
