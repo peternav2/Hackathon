@@ -5,6 +5,17 @@ from dotenv import load_dotenv
 load_dotenv()
 map_key = os.getenv("MAP_KEY", "Key Not Found")
 df_usa = pd.read_csv("../usa_data.csv", low_memory=False)
+df_zips = pd.read_csv("../zip_codes.csv", low_memory=False)
+
+def getAddsInState(state):
+    df_adds = df_usa[df_usa['address'].str.contains(state)]
+    return df_adds
+
+def getZipInState(state):
+    df_temp = df_zips[df_zips['state_name'].str.contains(state)]
+
+
+
 
 
 def getAddsInZip(zip):
@@ -51,9 +62,9 @@ def get_coordinates_from_address(address):
         print("HTTP error", response.status_code)
         return None, None
 # print(getBestAdds("11561"))
-AddsCoords = []
-for add in getBestAdds("10001").iterrows():
-    AddsCoords.append(get_coordinates_from_address(df_usa["address"][add[0]]))
-for coord in AddsCoords:
-    print(coord)
-    print("\n")
+# AddsCoords = []
+# for add in getBestAdds("10001").iterrows():
+#     AddsCoords.append(get_coordinates_from_address(df_usa["address"][add[0]]))
+# for coord in AddsCoords:
+#     print(coord)
+#     print("\n")

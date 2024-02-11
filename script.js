@@ -7,7 +7,7 @@ document.getElementById('searchForm').addEventListener('submit', async function(
     let location = document.getElementById('location').value;
     let category = document.getElementById('category').value;
     await test()
-    await test2("address testing")
+    await test2(location)
     //document.getElementById('resultsSection').innerHTML = `<p>${results}</p>`;
 });
 
@@ -30,7 +30,7 @@ async function test() {
 async function test2(data) {
   const response = await fetch('http://127.0.0.1:5000/', {
     method: 'POST',
-    body: JSON.stringify(data),
+    body: JSON.stringify({'location':data}),
     headers: {
       'Content-Type': 'application/json'
     },
