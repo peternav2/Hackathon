@@ -36,6 +36,7 @@ async function test2(data) {
     },
   })
   const responseData = await response.json();
+  //document.getElementById('resultsSection').innerHTML = `<p>${responseData}</p>`;
   console.log(responseData);
 
 }

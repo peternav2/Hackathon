@@ -20,9 +20,30 @@ def hello():
     if request.method == 'POST':
         body = request.get_json()
         location = body['location']
-        
+        while (True):
+            best = getBest5FromState(location)
+            if best is None:
+                continue
+            if len(best) < 5:
+                continue
+            else:
+                break
+        #getBest5FromState(location)
+        # print(best)
+        adds = []
+        for row in best.iterrows():
+            adds.append(df_usa["address"][row[0]])
+            print(df_usa["address"][row[0]])
+            print("\n")
+        AddsCoords = []
+        for add in adds:
+            latitude, longitude = get_coordinates_from_address(add.__str__())
+            AddsCoords.append((latitude, longitude))
+        for coord in AddsCoords:
+            print(coord)
+            print("\n")        
         res = make_response()
-        res.response = json.dumps({"message": "Hello, World! WE POSTING"})
+        res.response = json.dumps(AddsCoords)
         res.headers['content-type'] = 'application/json'
         return res
     else:
@@ -93,13 +114,13 @@ def get_coordinates_from_address(address):
         print("HTTP error", response.status_code)
         return None, None
 
-# Example usage
-address = "1600 Amphitheatre Parkway, Mountain View, CA"
-latitude, longitude = get_coordinates_from_address(address)
-if latitude and longitude:
-    print(f"Coordinates for '{address}' are: {latitude}, {longitude}")
-else:
-    print("Could not get the coordinates.")
+# # Example usage
+# address = "1600 Amphitheatre Parkway, Mountain View, CA"
+# latitude, longitude = get_coordinates_from_address(address)
+# if latitude and longitude:
+#     print(f"Coordinates for '{address}' are: {latitude}, {longitude}")
+# else:
+#     print("Could not get the coordinates.")
 
 
 
