@@ -7,14 +7,14 @@ import flask
 from flask_cors import CORS, cross_origin
 from flask import Flask
 from flask_cors import CORS
+from server.mapFns import *
 app = Flask(__name__)
 CORS(app)
 load_dotenv()
 map_key = os.getenv("MAP_KEY", "Key Not Found")
 
 
-
-@app.route("/", methods=['GET', 'POST', 'OPTIONS'])
+d@app.route("/", methods=['GET', 'POST', 'OPTIONS'])
 @cross_origin()
 def hello():
     if request.method == 'POST':
