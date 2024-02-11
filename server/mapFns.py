@@ -9,8 +9,8 @@ df_zips = pd.read_csv("./uszips.csv", low_memory=False)
 def get_coordinates_from_address(address):
     API_KEY = map_key
     base_url = "https://maps.googleapis.com/maps/api/geocode/json?"
-    address = "1600 Amphitheatre Parkway, Mountain View, CA"
-
+    # address = "1600 Amphitheatre Parkway, Mountain View, CA"
+    address = address.__str__()
     # URL encode the address
     address = requests.utils.quote(address)
 

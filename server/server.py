@@ -19,7 +19,7 @@ map_key = os.getenv("MAP_KEY", "Key Not Found")
 def hello():
     if request.method == 'POST':
         body = request.get_json()
-        location = body['location']
+        location = body['state']
         while (True):
             best = getBest5FromState(location)
             if best is None:
@@ -29,90 +29,96 @@ def hello():
             else:
                 break
         #getBest5FromState(location)
-        # print(best)
+        print("PRINT BEST 5")
+        print(best)
         adds = []
         for row in best.iterrows():
             adds.append(df_usa["address"][row[0]])
             print(df_usa["address"][row[0]])
             print("\n")
-        AddsCoords = []
+        addsCoords = []
         for add in adds:
+            print("PRINTING ADD")
+            print(add.__str__())
+            print("\n")
+            print("PRINTING COORDS")
+            print(get_coordinates_from_address(add))
             latitude, longitude = get_coordinates_from_address(add.__str__())
-            AddsCoords.append((latitude, longitude))
-        for coord in AddsCoords:
+            addsCoords.append((latitude, longitude))
+        for coord in addsCoords:
             print(coord)
             print("\n")        
         res = make_response()
-        res.response = json.dumps(AddsCoords)
+        res.response = json.dumps({'coords': addsCoords})
         res.headers['content-type'] = 'application/json'
         return res
     else:
         res = make_response()
-        coords = get_coordinates_from_address("1600 Amphitheatre Parkway, Mountain View, CA")
-        res.response = json.dumps({"message": "Hello, World!", "coords": coords})
+        #coords = get_coordinates_from_address("1600 Amphitheatre Parkway, Mountain View, CA")
+        res.response = json.dumps({"message": "Hello, World!"})
         return res
     
 
 
-
-def get_coordinates_from_addresses(addresses):
-    for address in addresses:
-        API_KEY = map_key
-        base_url = "https://maps.googleapis.com/maps/api/geocode/json?"
-        # URL encode the address
-        address = requests.utils.quote(address)
-        # Complete URL
-        url = f"{base_url}address={address}&key={API_KEY}"
-        # Send the request
-        response = requests.get(url)
-        if response.status_code == 200:
-            # Parse the JSON response
-            data = response.json()
+# @cross_origin()
+# def get_coordinates_from_addresses(addresses):
+#     for address in addresses:
+#         API_KEY = map_key
+#         base_url = "https://maps.googleapis.com/maps/api/geocode/json?"
+#         # URL encode the address
+#         address = requests.utils.quote(address)
+#         # Complete URL
+#         url = f"{base_url}address={address}&key={API_KEY}"
+#         # Send the request
+#         response = requests.get(url)
+#         if response.status_code == 200:
+#             # Parse the JSON response
+#             data = response.json()
             
-            # Check if any results were found
-            if data['status'] == 'OK':
-                # Extract latitude and longitude
-                latitude = data['results'][0]['geometry']['location']['lat']
-                longitude = data['results'][0]['geometry']['location']['lng']
-                return latitude, longitude
-            else:
-                print("Geocoding API error:", data['status'])
-                return None, None
-        else:
-            print("HTTP error", response.status_code)
-            return None, None
+#             # Check if any results were found
+#             if data['status'] == 'OK':
+#                 # Extract latitude and longitude
+#                 latitude = data['results'][0]['geometry']['location']['lat']
+#                 longitude = data['results'][0]['geometry']['location']['lng']
+#                 return latitude, longitude
+#             else:
+#                 print("Geocoding API error:", data['status'])
+#                 return None, None
+#         else:
+#             print("HTTP error", response.status_code)
+#             return None, None
 
-
-def get_coordinates_from_address(address):
-    address = "1600 Amphitheatre Parkway, Mountain View, CA"
-    API_KEY = map_key
-    base_url = "https://maps.googleapis.com/maps/api/geocode/json?"
+# @cross_origin()
+# def get_coordinates_from_address(address):
+#     address = "1600 Amphitheatre Parkway, Mountain View, CA"
+#     API_KEY = map_key
+#     base_url = "https://maps.googleapis.com/maps/api/geocode/json?"
     
-    # URL encode the address
-    address = requests.utils.quote(address)
+#     # URL encode the address
+#     address = requests.utils.quote(address)
     
-    # Complete URL
-    url = f"{base_url}address={address}&key={API_KEY}"
+#     # Complete URL
+#     url = f"{base_url}address={address}&key={API_KEY}"
     
-    # Send the request
-    response = requests.get(url)
+#     # Send the request
+#     response = requests.get(url)
     
-    if response.status_code == 200:
-        # Parse the JSON response
-        data = response.json()
+#     if response.status_code == 200:
+#         # Parse the JSON response
+#         data = response.json()
         
-        # Check if any results were found
-        if data['status'] == 'OK':
-            # Extract latitude and longitude
-            latitude = data['results'][0]['geometry']['location']['lat']
-            longitude = data['results'][0]['geometry']['location']['lng']
-            return latitude, longitude
-        else:
-            print("Geocoding API error:", data['status'])
-            return None, None
-    else:
-        print("HTTP error", response.status_code)
-        return None, None
+#         # Check if any results were found
+#         if data['status'] == 'OK':
+#             # Extract latitude and longitude
+#             latitude = data['results'][0]['geometry']['location']['lat']
+#             longitude = data['results'][0]['geometry']['location']['lng']
+#             return latitude, longitude
+#         else:
+#             print("Geocoding API error:", data['status'])
+#             return None, None
+#     else:
+#         print("HTTP error", response.status_code)
+#         return None, None
 
 # # Example usage
 # address = "1600 Amphitheatre Parkway, Mountain View, CA"
