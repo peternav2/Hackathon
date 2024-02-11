@@ -5,14 +5,20 @@ from dotenv import load_dotenv
 load_dotenv()
 map_key = os.getenv("MAP_KEY", "Key Not Found")
 df_usa = pd.read_csv("../usa_data.csv", low_memory=False)
-df_zips = pd.read_csv("../zip_codes.csv", low_memory=False)
+df_zips = pd.read_csv("./uszips.csv", low_memory=False)
 
 def getAddsInState(state):
     df_adds = df_usa[df_usa['address'].str.contains(state)]
     return df_adds
-
 def getZipInState(state):
     df_temp = df_zips[df_zips['state_name'].str.contains(state)]
+    print(df_temp)
+    return df_temp
+def getRandomZip(df_state_zips):
+    return df_state_zips.sample(5)
+print("testing geting random zip")
+zips = getRandomZip(getZipInState("NY"))
+print(zips)
 
 
 
